@@ -1,19 +1,10 @@
 import React from "react";
 import { useState } from "react";
+import { Cell } from "./cell";
 
 export const Board = ({ height, width, mines }) => {
     const [gameStatus, setGameStatus] = useState(false);
-
-    const initializeBoardData = (height, width, mines) => {
-        //make 2d array for board
-        let data = createEmptyArray(height, width);
-        //add mines to the array
-        data = plantMines(data, height, width, mines);
-        //look for non mine tiles, look at neighbors, calculate mines around it
-        data = getNeighbors(data, height, width);
-        return data;
-    }
-    const boardData = initializeBoardData(height, width, mines);
+    const [mineCount, setMineCount] = useState(mines);
 
     const createEmptyArray = (height, width) => {
         //make board array
@@ -127,6 +118,18 @@ export const Board = ({ height, width, mines }) => {
         return Math.floor(Math.random() * num);
     }
 
+    const initializeBoardData = (height, width, mines) => {
+        //make 2d array for board
+        let data = createEmptyArray(height, width);
+        //add mines to the array
+        data = plantMines(data, height, width, mines);
+        //look for non mine tiles, look at neighbors, calculate mines around it
+        data = getNeighbors(data, height, width);
+        return data;
+    }
+    let boardData = initializeBoardData(height, width, mines);
+    console.log(boardData);
+
     //bring it all together and render the board
     const renderBoard = (data) => {
         //iterate through the board, set all tiles to be cells
@@ -135,8 +138,8 @@ export const Board = ({ height, width, mines }) => {
                 return (
                     <div key={dataItem.x * dataRow.length + dataItem.y}>
                         <Cell
-                            onClick={() => handleCellClick(dataItem.x, dataItem.y)}
-                            cMenu={(e) => handleContextMenu(e, dataItem.x, dataItem.y)}
+                            // onClick={() => handleCellClick(dataItem.x, dataItem.y)}
+                            // cMenu={(e) => handleContextMenu(e, dataItem.x, dataItem.y)}
                             value={dataItem}
                         />
                         {(dataRow[dataRow.length - 1] === dataItem) ? <div className="clear" /> : ""}
@@ -145,6 +148,30 @@ export const Board = ({ height, width, mines }) => {
             })
         })
     }
+
+    // const handleCellClick = (x, y) => {
+    //     //check if it's revealed, true if it is
+    //     if (boardData[x][y].isRevealed || boardData[x][y].isFlagged) return null;
+
+    //     //check for a mine
+    //     if (boardData[x][y].isMine) {
+    //         setGameStatus("You lost");
+    //         revealBoard();
+    //         alert("Game Over");
+    //     }
+
+    //     if (updatedData[x][y].isEmpty) {
+    //         updatedData = revealEmpty(x, y, updatedData);
+    //     }
+
+    //     if (getHidden(updatedData).length === mines) {
+    //         setGameStatus("You win");
+    //         revealBoard();
+    //         alert("You Win");
+    //     }
+
+
+    // }
 
 
     return (
@@ -156,7 +183,7 @@ export const Board = ({ height, width, mines }) => {
                     {gameStatus}
                 </span>
             </div>
-            {renderBoard(boardData)}
+            {renderBoard()}
         </div>
     )
 }
